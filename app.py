@@ -4,9 +4,9 @@
 #ambiente di sviluppo è visual studio code
 
 import tkinter as tk 
-import pymssql
+import pymssql as sql
 
-conn = pymssql.connect(server='213.140.22.237\SQLEXPRESS', user='biagioni.jacopo', password='xxx123##', database='biagioni.jacopo') 
+conn = sql.connect(server='192.168.40.16\SQLEXPRESS', user='biagioni.jacopo', password='xxx123##', database='biagioni.jacopo') 
 
 window = tk.Tk()
 window.geometry("600x600")
@@ -15,6 +15,9 @@ window.configure(background="white")
 
 username_sql = tk.Entry(window)
 password_sql = tk.Entry(window)
+username2_sql = tk.Entry(window)
+password2_sql = tk.Entry(window)
+ricerca_sql = tk.Entry(window)
 
 def second_function():
     text = "Nuovo Messaggio! Nuova Funzione!"
@@ -28,7 +31,7 @@ def ciao_utente():
 
 def InsertUsers():
     conn.cursor()
-    cursor.execute = 'INSERT INTO Utenti VALUES (%s, %s)', (username_sql, password_sql)
+    cursor.execute = 'INSERT INTO Utenti VALUES %(username_sql)s, %(password_sql)s'
 
     conn.commit()
     conn.close()
@@ -41,6 +44,36 @@ def DeleteUsers():
     cursor.execute('DELETE FROM Utenti WHERE Username=%(username_sql)s and Password=%(password)s')
     conn.commit()
     conn.close()
+
+    button2 = tk.Button(window, text='Elimina', command=DeleteUsers)
+    button2.pack()
+
+def ModificaUsers():
+    cursor = conn.cursor()
+    cursor.execute('UPDATE Utenti SET Username=%(username2_sql)s WHERE Username=%(username_sql)s')
+    conn.commit()
+    conn.close()
+
+    button3 = tk.Button(window, text='Modifica Utente', command=ModificaUsers)
+    button3.pack()
+
+def ModificaPassword():
+    cursor = conn.cursor()
+    cursor.execute('UPDATE Utenti SET Password=%(password2_sql)s WHERE Password=%(password_sql)s')
+    conn.commit()
+    conn.close()
+
+    button4 = tk.Button(window, text='Modifica Password', command=ModificaPassword)
+    button4.pack()
+
+def Ricerca():
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Utenti WHERE Username or Password LIKE %'%(ricerca_sql)s'%")
+    conn.commit()
+    conn.close()
+
+    button5 = tk.Button(window, text='Ricerca', command=Ricerca)
+    button5.pack()
 
 userInput = tk.Label(window, text='Username').grid(row=0)   
 box = tk.Entry(window)
